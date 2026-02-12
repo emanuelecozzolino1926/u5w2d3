@@ -1,6 +1,7 @@
 package cozzolinoEmanuele.u5w2d2.exceptions;
 
 import cozzolinoEmanuele.u5w2d2.payloads.ErrorsPayload;
+import cozzolinoEmanuele.u5w2d2.payloads.ErrorsPayloadWithList;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,6 +11,12 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class ErrorsHandler {
+
+	@ExceptionHandler(ValidationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST) // 400
+	public ErrorsPayloadWithList handleValidationException(ValidationException ex) {
+		return new ErrorsPayloadWithList(ex.getMessage(), LocalDateTime.now(), ex.getErrorsMessages());
+	}
 
 	@ExceptionHandler(BadRequestException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST) // 400

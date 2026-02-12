@@ -1,5 +1,7 @@
 package cozzolinoEmanuele.u5w2d2.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import cozzolinoEmanuele.u5w2d2.entities.Author;
 import cozzolinoEmanuele.u5w2d2.entities.BlogPost;
 import cozzolinoEmanuele.u5w2d2.exceptions.NotFoundException;
@@ -12,7 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -20,11 +25,13 @@ import java.util.UUID;
 public class BlogPostsService {
 	private final BlogPostsRepository blogPostsRepository;
 	private final AuthorsService authorsService;
+	private final Cloudinary cloudinaryUploader;
 
 	@Autowired
-	public BlogPostsService(BlogPostsRepository blogPostsRepository, AuthorsService authorsService) {
+	public BlogPostsService(BlogPostsRepository blogPostsRepository, AuthorsService authorsService, Cloudinary cloudinaryUploader) {
 		this.blogPostsRepository = blogPostsRepository;
 		this.authorsService = authorsService;
+		this.cloudinaryUploader = cloudinaryUploader;
 	}
 
 	public BlogPost save(BlogPostPayload payload) {
@@ -73,5 +80,18 @@ public class BlogPostsService {
 	public void findByIdAndDelete(UUID blogPostId) {
 		BlogPost found = this.findById(blogPostId);
 		this.blogPostsRepository.delete(found);
+	}
+
+	public String uploadCover(UUID blogPostId, MultipartFile file) {
+		BlogPost found = this.findById(blogPostId);
+		try {
+			Map result = cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+			String imageUrl = (String) result.get("secure_url");
+			found.setCoverURL(imageUrl);
+			this.blogPostsRepository.save(found);
+			return imageUrl;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package cozzolinoEmanuele.u5w2d2.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import cozzolinoEmanuele.u5w2d2.entities.Author;
 import cozzolinoEmanuele.u5w2d2.exceptions.BadRequestException;
 import cozzolinoEmanuele.u5w2d2.exceptions.NotFoundException;
@@ -12,17 +14,22 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @Slf4j
 public class AuthorsService {
 	private final AuthorsRepository authorsRepository;
+	private final Cloudinary cloudinaryUploader;
 
 	@Autowired
-	public AuthorsService(AuthorsRepository authorsRepository) {
+	public AuthorsService(AuthorsRepository authorsRepository, Cloudinary cloudinaryUploader) {
 		this.authorsRepository = authorsRepository;
+		this.cloudinaryUploader = cloudinaryUploader;
 	}
 
 	public Author save(AuthorPayload payload) {
@@ -75,5 +82,18 @@ public class AuthorsService {
 	public void findByIdAndDelete(UUID authorId) {
 		Author found = this.findById(authorId);
 		this.authorsRepository.delete(found);
+	}
+
+	public String uploadAvatar(UUID authorId, MultipartFile file) {
+		Author found = this.findById(authorId);
+		try {
+			Map result = cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+			String imageUrl = (String) result.get("secure_url");
+			found.setAvatarURL(imageUrl);
+			this.authorsRepository.save(found);
+			return imageUrl;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

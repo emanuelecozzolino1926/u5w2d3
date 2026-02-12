@@ -1,13 +1,18 @@
 package cozzolinoEmanuele.u5w2d2.controllers;
 
 import cozzolinoEmanuele.u5w2d2.entities.BlogPost;
+import cozzolinoEmanuele.u5w2d2.exceptions.ValidationException;
 import cozzolinoEmanuele.u5w2d2.payloads.BlogPostPayload;
 import cozzolinoEmanuele.u5w2d2.services.BlogPostsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -23,7 +28,14 @@ public class BlogPostsController {
 	// 1. POST http://localhost:3001/blogPosts (+ Payload)
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public BlogPost createBlogPost(@RequestBody BlogPostPayload payload) {
+	public BlogPost createBlogPost(@RequestBody @Validated BlogPostPayload payload, BindingResult validationResult) {
+		if (validationResult.hasErrors()) {
+			List<String> errorsList = validationResult.getFieldErrors()
+					.stream()
+					.map(fieldError -> fieldError.getDefaultMessage())
+					.toList();
+			throw new ValidationException(errorsList);
+		}
 		return this.blogPostsService.save(payload);
 	}
 
@@ -44,7 +56,14 @@ public class BlogPostsController {
 
 	// 4. PUT http://localhost:3001/blogPosts/{blogPostId}
 	@PutMapping("/{blogPostId}")
-	public BlogPost findByIdAndUpdate(@PathVariable UUID blogPostId, @RequestBody BlogPostPayload payload) {
+	public BlogPost findByIdAndUpdate(@PathVariable UUID blogPostId, @RequestBody @Validated BlogPostPayload payload, BindingResult validationResult) {
+		if (validationResult.hasErrors()) {
+			List<String> errorsList = validationResult.getFieldErrors()
+					.stream()
+					.map(fieldError -> fieldError.getDefaultMessage())
+					.toList();
+			throw new ValidationException(errorsList);
+		}
 		return this.blogPostsService.findByIdAndUpdate(blogPostId, payload);
 	}
 
@@ -53,5 +72,11 @@ public class BlogPostsController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void findByIdAndDelete(@PathVariable UUID blogPostId) {
 		this.blogPostsService.findByIdAndDelete(blogPostId);
+	}
+
+	// 6. PATCH http://localhost:3001/blogPosts/{blogPostId}/cover
+	@PatchMapping("/{blogPostId}/cover")
+	public String uploadCover(@RequestParam("cover") MultipartFile file, @PathVariable UUID blogPostId) {
+		return this.blogPostsService.uploadCover(blogPostId, file);
 	}
 }
