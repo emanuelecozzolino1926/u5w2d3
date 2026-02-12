@@ -1,0 +1,15 @@
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\controllers\AuthorsController.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\controllers\BlogPostsController.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\entities\Author.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\entities\BlogPost.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\exceptions\BadRequestException.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\exceptions\ErrorsHandler.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\exceptions\NotFoundException.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\payloads\AuthorPayload.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\payloads\BlogPostPayload.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\payloads\ErrorsPayload.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\repositories\AuthorsRepository.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\repositories\BlogPostsRepository.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\services\AuthorsService.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\services\BlogPostsService.java
+C:\Users\manur\Desktop\u5w2d2\src\main\java\cozzolinoEmanuele\u5w2d2\U5w2d2Application.java
